@@ -60,12 +60,13 @@ def colourection(ImageFileName: str, ColourBalanceSquare: list[int, int, int, in
     x2 = ColourBalanceSquare[2]
     y2 = ColourBalanceSquare[3]
     VARIANCE_LIMIT = 20
-    CORRECTION_LIMIT = 6.26
-    SKIP_RATE_X = 1 + (x2 - x1) // 100
-    SKIP_RATE_Y = 1 + (y2 - y1) // 100
+    CORRECTION_LIMIT = 32
+    SKIP_RATE_X = 1 + (x2 - x1) // 75
+    SKIP_RATE_Y = 1 + (y2 - y1) // 75
     # Open the image
     image = Image.open("../Images/" + ImageFileName)
     image = image.convert("RGB")
+    imageColourData = list(image.getdata())
 
     # Find the Nine Colours of the Square in the Image with Averages of each Colour within each smaller square
     ColourBalanceSquareColours = [[[0, 0, 0], [0, 0, 0], [0, 0, 0]],
@@ -79,9 +80,9 @@ def colourection(ImageFileName: str, ColourBalanceSquare: list[int, int, int, in
         nextY = False
         for y in range(y1, y2 - SKIP_RATE_Y, SKIP_RATE_Y):
             for x in range(x1, x2 - SKIP_RATE_X, SKIP_RATE_X):
-                current_colour = image.getpixel((x, y))
-                next_colour_x = image.getpixel((x + SKIP_RATE_X, y))
-                next_colour_y = image.getpixel((x, y + SKIP_RATE_Y))
+                current_colour = imageColourData[y * image.width + x]
+                next_colour_x = imageColourData[y * image.width + x + SKIP_RATE_X]
+                next_colour_y = imageColourData[(y + SKIP_RATE_Y) * image.width + x]
 
                 # Update the Colour Variance
                 colour_variance_x = abs(current_colour[0] - next_colour_x[0]) / (3 * 255) + abs(current_colour[1] - next_colour_x[1]) / (3 * 255) + abs(current_colour[2] - next_colour_x[2]) / (3 * 255)
@@ -122,9 +123,10 @@ def colourection(ImageFileName: str, ColourBalanceSquare: list[int, int, int, in
         # Correct the Colour Balance Square Colours
         for y in range(0, image.height, 1):
             for x in range(0, image.width, 1):
-                current_colour = image.getpixel((x, y))
+                current_colour = imageColourData[y * image.width + x]
                 corrected_colour = variance_square_adjusted_colour(current_colour, ColourBalanceSquareColours)
-                image.putpixel((x, y), tuple(corrected_colour))
+                imageColourData[y * image.width + x] = tuple(corrected_colour)
+    image.putdata(imageColourData)
 
 
 Images = os.listdir("../Images")
