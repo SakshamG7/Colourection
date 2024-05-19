@@ -131,7 +131,7 @@ Images = os.listdir("../Images")
 for image in Images:
     if not (image.endswith(".jpg") or image.endswith(".jpeg") or image.endswith(".png")):
         continue
-    squareData = map(int, image.split("-"))[0:3]
+    squareData = list(map(int, image.split("-")[0:4]))
     print(image, squareData)
     colourection(image, squareData)
 
