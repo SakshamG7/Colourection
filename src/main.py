@@ -72,12 +72,12 @@ def colourection(ImageFileName: str, ColourBalanceSquare: list[int, int, int, in
         print(ColourBalanceSquareColours[i])
 
 
-Images = os.listdir("Images")
+Images = os.listdir("../Images")
 for image in Images:
     if not (image.endswith(".jpg") or image.endswith(".jpeg") or image.endswith(".png")):
         continue
     print(image)
-    colourection("Images/" + image, [2648, 2648, 4688, 4688])
+    colourection("../Images/" + image, [2648, 2648, 4688, 4688])
 
 print("Saksham's Colour Balance Square Small.png")
-colourection("Saksham's Colour Balance Square Small.png", [0, 0, 750, 750])
+colourection("../Saksham's Colour Balance Square Small.png", [0, 0, 750, 750])
