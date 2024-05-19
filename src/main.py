@@ -45,8 +45,8 @@ def variance_square_adjusted_colour(currentColour, currentColourBalanceSquareCol
                 minVariance = abs(variance)
     correct_colour = list(currentColour)
     for i in range(3):
-        correct_colour[i] += abs(CorrectColourBalanceSquareColours[colourBalanceY][colourBalanceX][i] + currentColourBalanceSquareColours[colourBalanceY][colourBalanceX][i])
-        correct_colour[i] //= 3
+        correct_colour[i] += correct_colour[i] + abs(CorrectColourBalanceSquareColours[colourBalanceY][colourBalanceX][i] + currentColourBalanceSquareColours[colourBalanceY][colourBalanceX][i])
+        correct_colour[i] //= 4
     return correct_colour
 
 
@@ -60,7 +60,7 @@ def colourection(ImageFileName: str, ColourBalanceSquare: list[int, int, int, in
     x2 = ColourBalanceSquare[2]
     y2 = ColourBalanceSquare[3]
     VARIANCE_LIMIT = 20
-    CORRECTION_LIMIT = 5
+    CORRECTION_LIMIT = 6.26
     SKIP_RATE_X = 1 + (x2 - x1) // 100
     SKIP_RATE_Y = 1 + (y2 - y1) // 100
     # Open the image
@@ -131,8 +131,9 @@ Images = os.listdir("../Images")
 for image in Images:
     if not (image.endswith(".jpg") or image.endswith(".jpeg") or image.endswith(".png")):
         continue
-    print(image)
-    colourection(image, [57, 57, 100, 100])
+    squareData = map(int, image.split("-"))[0:3]
+    print(image, squareData)
+    colourection(image, squareData)
 
 print("Saksham's Colour Balance Square Small.png")
 colourection("../Saksham's Colour Balance Square Small.png", [0, 0, 750, 750])
